@@ -1,0 +1,26 @@
+FROM rust:slim-bullseye AS builder
+
+WORKDIR /app
+
+COPY ./Cargo.toml ./Cargo.toml
+COPY ./Cargo.lock ./Cargo.lock
+RUN mkdir src && echo "fn main() {}" > src/main.rs
+RUN cargo fetch
+
+COPY ./src ./src
+
+RUN cargo build --release --locked
+
+
+
+FROM debian:bullseye-slim
+
+RUN useradd -r -s /usr/sbin/nologin user
+
+COPY --from=builder /app/target/release/api-rust /usr/local/bin/api-rust
+
+RUN chown user:user /usr/local/bin/api-rust
+
+USER user
+
+CMD ["api-rust"]
