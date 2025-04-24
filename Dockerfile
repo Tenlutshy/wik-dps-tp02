@@ -6,8 +6,7 @@ RUN useradd -r -s /usr/sbin/nologin user
 RUN chown user .
 RUN chmod 544 .
 
-COPY ./Cargo.toml ./Cargo.toml
-COPY ./Cargo.lock ./Cargo.lock
+COPY ./Cargo.* ./
 
 RUN mkdir src && echo "fn main() {}" > src/main.rs
 RUN cargo fetch
